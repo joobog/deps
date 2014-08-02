@@ -16,47 +16,59 @@ SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
 cd "$SCRIPTPATH/.."
 ROOTdir="$PWD"
-PREFIX="${ROOTdir}/local"
-SRCdir="${SCRIPTPATH}/bzip2-1.0.6"
-LOG="${SCRIPTPATH}/install_bzip2.log"
+
+PREFIX="${ROOTdir}/lib/bzip2_`date +%Y%m%d%H%M`"
+CACHEdir="${SCRIPTPATH}/cache_bzip2"
+SRCdir="${CACHEdir}/bzip2-1.0.6"
+LOGfile="${CACHEdir}/log"
+LINK="${ROOTdir}/lib/bzip2"
 
 echo "bzip2 root dir: ${ROOTdir}"
+echo "bzip2 cache dir: ${CACHEdir}"
 echo "bzip2 source dir: ${SRCdir}"
 echo "bzip2 prefix: ${PREFIX}"
-echo "bzip2 log: ${LOG}"
+echo "bzip2 log: ${LOGfile}"
+echo "bzip2 link: ${LINK}"
 
-echo "" > "$LOG"
+echo "" > "$LOGfile"
 
-### EXTRACT ###
-
-if [ -d "${PREFIX}" ] 
+### FETCH AND EXTRACT ###
+if [ ! -d ${CACHEdir} ]
 then
-	echo "bzip2 is already installed"
-	exit 0
-else
-	mkdir -p ${PREFIX}
+	mkdir -p ${CACHEdir}
 fi
 
-cd $SCRIPTPATH
-if [ ! -e "${SCRIPTPATH}/boost_1_55_0.tar.bz2" ] 
+cd ${CACHEdir}
+if [ ! -e "${CACHEdir}/bzip2-1.0.6.tar.bz2" ] 
 then
 	SOURCE="http://bzip.org/1.0.6/bzip2-1.0.6.tar.gz"
-	wget $SOURCE
+	wget $SOURCE &>> $LOGfile
+
 else
 	echo "WARNING: Archive already exists"
 fi
 
-if [ ! -d "${SCRIPTPATH}" ] 
+if [ ! -d "${SRCdir}" ] 
 then
-	gunzip "${SCRIPTPATH}/bzip2-1.0.6.tar.gz"
-	tar -xvf "${SCRIPTPATH}/bzip2-1.0.6.tar"
+	gunzip "${CACHEdir}/bzip2-1.0.6.tar.gz" &>> $LOGfile
+
+	tar -xvf "${CACHEdir}/bzip2-1.0.6.tar" &>> $LOGfile
+
 else
 	echo "WARNING: A copy of archive is already extracted"
 fi
 
-#### COMPILE ###
+### COMPILE AND INSTALL ###
 cd ${SRCdir}
-make install PREFIX="${PREFIX}"
-#cd ${SRCdir}
-#${SRCdir}/bootstrap.sh --prefix=$PREFIX &>> $LOG
-#${SRCdir}/b2 -j4 --build-type=complete --layout=tagged --prefix=${PREFIX} install &>> $LOG
+make install PREFIX="${PREFIX}" &>> $LOGfile
+mkdir -p "${PREFIX}/src"
+cp -r ${SRCdir}/* "${PREFIX}/src"
+
+### LINK ###
+cd "${ROOTdir}/lib"
+if [ -d ${LINK} ]
+then
+	rm ${LINK}
+fi
+
+ln -s ${PREFIX} bzip2

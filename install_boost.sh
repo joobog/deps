@@ -16,13 +16,14 @@ SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
 cd "$SCRIPTPATH/.."
 ROOTdir="$PWD"
-PREFIX="${ROOTdir}/lib/boost"
-SRCdir="${SCRIPTPATH}/boost_1_55_0"
-LOG="${SCRIPTPATH}/install_boost.log"
-export BZIP2_INCLUDE="${ROOTdir}/local/include"
-export BZIP2_LIBRARY="${ROOTdir}/local/lib"
-export BZIP2_BINARY="${ROOTdir}/local/bin"
-export BZIP2_SOURCE="${ROOTdir}/lib_src/bzip2-1.0.6"
+CACHEdir="${SCRIPTPATH}/cache_boost"
+PREFIX="${ROOTdir}/lib/boost_`date +%Y%m%d%H%M`"
+SRCdir="${CACHEdir}/boost_1_55_0"
+LOG="${CACHEdir}/log"
+export BZIP2_INCLUDE="${ROOTdir}/lib/bzip2/include"
+export BZIP2_LIBRARY="${ROOTdir}/lib/bzip2/lib"
+export BZIP2_BINARY="${ROOTdir}/lib/bzip2/bin"
+export BZIP2_SOURCE="${ROOTdir}/lib/bzip2/src"
 
 if [ ! -d ${BZIP2_INCLUDE} ]
 then
@@ -47,6 +48,7 @@ fi
 
 
 echo "boost root dir: ${ROOTdir}"
+echo "boost cache dir: ${CACHEdir}"
 echo "boost source dir: ${SRCdir}"
 echo "boost prefix: ${PREFIX}"
 echo "boost log: ${LOG}"
@@ -58,16 +60,13 @@ echo "boost bzlib2 bin: ${BZLIB2_BINARY_DIR}"
 echo "" > "$LOG"
 
 ### EXTRACT ###
-if [ -d "${PREFIX}" ] 
-then
-	echo "boost is already installed"
-	#exit 0
-else
-	mkdir -p ${PREFIX}
+if [ ! -d ${CACHEdir} ]
+then 
+	mkdir -p ${CACHEdir}
 fi
 
-cd $SCRIPTPATH
-if [ ! -e "${SCRIPTPATH}/boost_1_55_0.tar.bz2" ] 
+cd ${CACHEdir}
+if [ ! -e "${CACHEdir}/boost_1_55_0" ] 
 then
 	SOURCE="http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2"
 	wget $SOURCE
@@ -77,8 +76,8 @@ fi
 
 if [ ! -d "${SRCdir}" ] 
 then
-	bunzip2 "${SCRIPTPATH}/boost_1_55_0.tar.bz2" 
-	tar -xvf "${SCRIPTPATH}/boost_1_55_0.tar"
+	bunzip2 "${CACHEdir}/boost_1_55_0.tar.bz2"  &>> $LOG
+	tar -xvf "${CACHEdir}/boost_1_55_0.tar" &>> $LOG
 else
 	echo "WARNING: A copy of archive is already extracted"
 fi
@@ -87,7 +86,18 @@ fi
 cd ${SRCdir}
 #${SRCdir}/bootstrap.sh --includedir="${BZLIB2_INCLUDE_DIR}" --libdir="${BZLIB2_LIBRARY_DIR}" --prefix=$PREFIX &>> $LOG
 #${SRCdir}/b2 -j4 --build-type=complete --layout=tagged --includedir="${BZLIB2_INCLUDE_DIR}" --libdir="${BZLIB2_LIBRARY_DIR}" --prefix=${PREFIX} install &>> $LOG
-${SRCdir}/bootstrap.sh  --prefix=$PREFIX &>> $LOG
 
+${SRCdir}/bootstrap.sh  --prefix=$PREFIX &>> $LOG
 ${SRCdir}/b2 -j8 &>> $LOG
 ${SRCdir}/b2 -j8 --build-type=complete --layout=tagged --prefix=${PREFIX} install &>> $LOG
+
+### LINK ###
+
+cd "${ROOTdir}/lib"
+
+if [ -d "${ROOTdir}/lib/boost" ]
+then
+	rm "${ROOTdir}/lib/boost"
+fi
+ln -s ${PREFIX} boost
+
