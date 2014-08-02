@@ -4,12 +4,12 @@ SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
 LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${SCRIPTPATH}/.."
 
-if hash module 2>/dev/null; then
-	echo "load gcc 4.8.2"
-	[ module load gcc/4.8.2 ] || { echo "module gcc/4.8.2 doen't exists"; exit 1; }
-else
-	true
-fi
+#if hash module 2>/dev/null; then
+	#echo "load gcc 4.8.2"
+	#[ module load gcc/4.8.2 ] || { echo "module gcc/4.8.2 doen't exists"; }
+#else
+	#true
+#fi
 
 cd ${SCRIPTPATH}
 cd ..
