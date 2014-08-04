@@ -49,8 +49,7 @@ fi
 mkdir -p ${BLDdir}
 
 cd ${BLDdir}
-#cmake ${SRCdir} -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT:Path=${ROOTdir}/lib/boost/  -DBOOST_INCLUDEDIR=${ROOTdir}/lib/boost/include -DBOOST_LIBRARYDIR=${ROOTdir}/lib/boost/lib -DATLAS_ROOT:Path=${ROOTdir}/lib/atlas -DOPT_ENABLE_ATLAS=ON -DOPT_ENABLE_OPENMP=ON -DOPT_COMPILE_EXAMPLES=OFF > ${LOG}
-cmake ${SRCdir} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT:Path=${ROOTdir}/lib/boost/  -DBOOST_INCLUDEDIR=${ROOTdir}/lib/boost/include -DBOOST_LIBRARYDIR=${ROOTdir}/lib/boost/lib -DOPT_ENABLE_ATLAS=OFF -DOPT_ENABLE_OPENMP=OFF -DOPT_COMPILE_EXAMPLES=OFF > ${LOG}
+cmake ${SRCdir} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT:Path=${ROOTdir}/lib/boost/  -DBOOST_INCLUDEDIR=${ROOTdir}/lib/boost/include -DBOOST_LIBRARYDIR=${ROOTdir}/lib/boost/lib -DATLAS_ROOT:Path=${ROOTdir}/lib/atlas/ -DATLAS_INCLUDEDIR=${ROOTdir}/lib/atlas/include -DATLAS_LIBRARYDIR=${ROOTdir}/lib/atlas/lib -DOPT_ENABLE_ATLAS=ON -DOPT_ENABLE_OPENMP=ON -DOPT_COMPILE_EXAMPLES=OFF &>> ${LOG}
 
 make -j16 &>> ${LOG}
 make -j16 install &>> ${LOG}

@@ -84,12 +84,10 @@ fi
 
 ### COMPILE ###
 cd ${SRCdir}
-#${SRCdir}/bootstrap.sh --includedir="${BZLIB2_INCLUDE_DIR}" --libdir="${BZLIB2_LIBRARY_DIR}" --prefix=$PREFIX &>> $LOG
-#${SRCdir}/b2 -j4 --build-type=complete --layout=tagged --includedir="${BZLIB2_INCLUDE_DIR}" --libdir="${BZLIB2_LIBRARY_DIR}" --prefix=${PREFIX} install &>> $LOG
 
-${SRCdir}/bootstrap.sh  --prefix=$PREFIX &>> $LOG
-${SRCdir}/b2 -j8 &>> $LOG
-${SRCdir}/b2 -j8 --build-type=complete --layout=tagged --prefix=${PREFIX} install &>> $LOG
+${SRCdir}/bootstrap.sh  --prefix=$PREFIX --with-mpi &>> $LOG
+${SRCdir}/b2 -j8 --with-mpi &>> $LOG
+${SRCdir}/b2 -j8 --build-type=complete --layout=tagged --with-mpi --prefix=${PREFIX} install &>> $LOG
 
 ### LINK ###
 
