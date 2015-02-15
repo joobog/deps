@@ -1,0 +1,72 @@
+#!/bin/bash
+
+SCRIPT=$(readlink -f $0)
+SCRIPTPATH=`dirname ${SCRIPT}`
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${SCRIPTPATH}/.."
+
+
+cd ${SCRIPTPATH}
+cd ..
+NAME="libffi"
+VERSION="3.0.13"
+
+ROOTdir=${PWD}
+CACHEdir="${SCRIPTPATH}/cache_${NAME}"
+SRCdir="${CACHEdir}/${NAME}-${VERSION}" 		# source directory
+
+BLDdir="${SRCdir}/build" 			# build directory
+PREFIX="${ROOTdir}/lib/${NAME}_`date +%Y%m%d%H%M`"		# install directory
+LOG="${CACHEdir}/log"
+
+
+echo "root dir: ${ROOTdir}"
+echo "cache dir: ${CACHEdir}" 
+echo "source dir: ${SRCdir}"
+echo "build dir: ${BLDdir}"
+echo "install dir: ${PREFIX}"
+
+if [ ! -d ${CACHEdir} ]
+then
+	mkdir -p ${CACHEdir}
+fi
+
+echo "" &> ${LOG}
+
+### FETCH ###
+
+
+if [ ! -d "${SRCdir}" ] 
+then
+	cd ${CACHEdir}
+	wget ftp://sourceware.org/pub/libffi/${NAME}-${VERSION}.tar.gz
+else
+	echo "WARNING: ${NAME} is already downloaded"
+fi
+
+
+if [ ! -d "./${SRCdir}" ]
+then                                                                                                                                
+	mkdir "${SRCdir}"
+	gunzip -f "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
+	tar -xf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+else                                                                                                                                
+	echo "Warning: Atlas is alread extracted"
+fi
+
+
+### COMPILE AND INSTALL ###
+
+cd ${SRCdir}
+./configure --prefix=${PREFIX} --with-pic=yes &>> ${LOG}
+make &>> ${LOG}
+make install &>> ${LOG}
+
+
+### LINK ###
+cd "${ROOTdir}/lib"
+if [ -d "${ROOTdir}/lib/${NAME}" ]
+then
+	rm "${ROOTdir}/lib/${NAME}"
+fi
+ln -s $PREFIX ${NAME}
+

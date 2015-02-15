@@ -12,7 +12,7 @@ CACHEdir="${SCRIPTPATH}/cache_shark"
 SRCdir="${CACHEdir}/Shark" 		# source directory
 
 BLDdir="${SRCdir}/build" 			# build directory
-PREFIX="${ROOTdir}/lib/shark_`date +%Y%d%m%H%M`"		# install directory
+PREFIX="${ROOTdir}/lib/shark_`date +%Y%m%d%H%M`"		# install directory
 LOG="${CACHEdir}/log"
 
 

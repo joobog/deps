@@ -85,10 +85,13 @@ fi
 ### COMPILE ###
 cd ${SRCdir}
 
-${SRCdir}/bootstrap.sh  --prefix=$PREFIX --with-mpi &>> $LOG
-${SRCdir}/b2 -j8 --with-mpi &>> $LOG
-${SRCdir}/b2 -j8 --build-type=complete --layout=tagged --with-mpi --prefix=${PREFIX} install &>> $LOG
+#${SRCdir}/bootstrap.sh  --prefix=$PREFIX --with-mpi &>> $LOG
+#${SRCdir}/b2 -j8 --with-mpi &>> $LOG
+#${SRCdir}/b2 -j8 --build-type=complete --layout=tagged --with-mpi --prefix=${PREFIX} install &>> $LOG
 
+${SRCdir}/bootstrap.sh  --prefix=$PREFIX  &>> $LOG
+${SRCdir}/b2 -j16  &>> $LOG
+${SRCdir}/b2 -j16 --build-type=complete --layout=tagged  --prefix=${PREFIX} install &>> $LOG
 ### LINK ###
 
 cd "${ROOTdir}/lib"
