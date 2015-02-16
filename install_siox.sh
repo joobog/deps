@@ -45,11 +45,11 @@ fi
 #### COMPILE AND INSTALL ###
 
 #${SRCdir}/configure --with-libpq=$ROOTdir/lib/postgresql --with-glib=$ROOTdir/lib/glib --with-likwid=$ROOTdir/lib/likwid --with-boost=$ROOTdir/lib/boost --prefix=${PREFIX} --build-dir=${BLDdir} --build-wrappers 
-${SRCdir}/configure --with-libpq=$ROOTdir/lib/postgresql --with-glib=$ROOTdir/lib/glib  --with-boost=$ROOTdir/lib/boost --prefix=${PREFIX} --build-dir=${BLDdir} --build-wrappers 
+${SRCdir}/configure --with-libpqxx=$ROOTdir/lib/libpqxx --with-libpq=$ROOTdir/lib/postgresql --with-glib=$ROOTdir/lib/glib  --with-boost=$ROOTdir/lib/boost --prefix=${PREFIX} --build-dir=${BLDdir} &>> ${LOG}
 cd "${BLDdir}" &>> "${LOG}"
 
-make -j16 &>> "${LOG}"
-make -j16 install &>> "${LOG}"
+make -j1 &>> "${LOG}"
+make -j1 install &>> "${LOG}"
 
 ### LINK ###
 cd "${ROOTdir}/lib"
