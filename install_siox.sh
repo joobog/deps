@@ -22,6 +22,7 @@ fi
 
 #### COMPILE AND INSTALL ###
 ${SRCdir}/configure --with-libpq=${INSTALL_ROOT_DIR}/postgresql --with-glib=${INSTALL_ROOT_DIR}/glib  --with-boost=${INSTALL_ROOT_DIR}/boost --prefix=${PREFIX} --build-dir=${BLDdir} --with-likwid=${INSTALL_ROOT_DIR}/likwid --build-wrappers &>> ${LOG}
+
 cd "${BLDdir}" &>> "${LOG}"
 make -j${THREAD_NUM} &>> "${LOG}"
 make install &>> "${LOG}"
