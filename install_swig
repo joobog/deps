@@ -5,8 +5,8 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 
 ${SCRIPTPATH}/precheck
 
-export NAME="libpqxx"
-export VERSION="4.0.1"
+export NAME="swig"
+export VERSION="3.0.5"
 
 source ${SCRIPTPATH}/config
 
@@ -15,7 +15,7 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget "ftp://pqxx.org/software/libpqxx/${NAME}-${VERSION}.tar.gz"
+	wget http://garr.dl.sourceforge.net/project/swig/swig/swig-3.0.5/${NAME}-${VERSION}.tar.gz
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
@@ -26,7 +26,7 @@ if [ ! -d "./${SRCdir}" ]
 then 
 	mkdir "${SRCdir}"
 	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	tar -xvf "./${NAME}-${VERSION}.tar" &>> ${LOG}
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -34,7 +34,7 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX} --with-pic=yes &>> ${LOG}
+./configure --prefix=${PREFIX}
 make -j${THREAD_NUM} &>> ${LOG}
 make install &>> ${LOG}
 

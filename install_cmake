@@ -5,8 +5,8 @@ SCRIPTPATH=`dirname ${SCRIPT}`
 
 ${SCRIPTPATH}/precheck
 
-NAME="libffi"
-VERSION="3.0.13"
+NAME="cmake"
+VERSION="3.2.0-rc1-Linux-x86_64"
 
 source ${SCRIPTPATH}/config
 
@@ -15,7 +15,8 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget ftp://sourceware.org/pub/libffi/${NAME}-${VERSION}.tar.gz
+	#wget http://www.cmake.org/files/v3.2/cmake-3.2.0-rc1-linux-x86_64.tar.gz
+	wget http://www.cmake.org/files/v3.2/${NAME}-${VERSION}.tar.gz
 else
 	echo "WARNING: ${NAME} is already downloaded"
 fi
@@ -33,10 +34,8 @@ fi
 
 
 ### COMPILE AND INSTALL ###
-cd ${SRCdir}
-./configure --prefix=${PREFIX} --with-pic=yes &>> ${LOG}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+cd ${CACHEdir}
+mv ${NAME}-${VERSION} ${PREFIX}
 
 
 ### LINK ###

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+SCRIPT=$(readlink -f $0)
+SCRIPTPATH=`dirname ${SCRIPT}`
+
+${SCRIPTPATH}/precheck
+
+NAME="likwid"
+VERSION="3.1.3"
+
+source ${SCRIPTPATH}/config
+
+
+### FETCH ###
+if [ ! -d "${SRCdir}" ] 
+then
+	cd ${CACHEdir}
+	wget http://ftp.fau.de/pub/likwid/${NAME}-${VERSION}.tar.gz
+else
+	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
+fi
+
+
+### EXTRACT ###
+if [ ! -d "./${SRCdir}" ]
+then
+	#mkdir "${SRCdir}"
+	gunzip -f "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
+	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+else
+	echo "Warning: ${NAME}-${VERSION} is alread extracted"
+fi
+
+
+#### COMPILE AND INSTALL ###
+cd ${SRCdir}
+make clean
+sed -i '/^PREFIX.*/c\PREFIX = '"$PREFIX"'#NO SPACE' ./config.mk 
+export CFLAGS="${CFLAGS} -fPIC"
+COUNT=`cat ./Makefile | grep fPIC | wc -l`
+echo "COUNT = $COUNT"
+if [ ${COUNT} -eq 0 ]
+then
+	echo "add -fPIC flag to CFLAGS and CPPFLAGS"
+	sed -i '/^CPPFLAGS.*/ a\CPPFLAGS += \{CPPFLAGS\} -fPIC' ./Makefile
+	sed -i '/^CFLAGS.*/ a\CPPFLAGS += ${CFLAGS} -fPIC' ./Makefile
+fi
+make -j${THREAD_NUM} &>> ${LOG}
+make install &>> ${LOG}
+
+
+### LINK ###
+source ${SCRIPTPATH}/link

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+
+### LINK ###
+
+echo "### LINK ###"
+echo "INSTALL_ROOT_DIR: ${INSTALL_ROOT_DIR}"
+echo "PREFIX: ${PREFIX}"
+echo "NAME: ${NAME}"
+
+cd "${INSTALL_ROOT_DIR}"
+if [ -d "${INSTALL_ROOT_DIR}/${NAME}" ]
+then
+	rm "${INSTALL_ROOT_DIR}/${NAME}"
+fi
+ln -s "$PREFIX" "${NAME}"

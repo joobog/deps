@@ -2,73 +2,43 @@
 
 SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
-LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${SCRIPTPATH}/.."
 
+${SCRIPTPATH}/precheck
 
-#http://ftp.gnome.org/pub/gnome/sources/glib/2.43/glib-2.43.4.tar.xz
-cd ${SCRIPTPATH}
-cd ..
 NAME="glib"
 VERSION="2.43.4"
 
-ROOTdir=${PWD}
-CACHEdir="${SCRIPTPATH}/cache_${NAME}"
-SRCdir="${CACHEdir}/${NAME}-${VERSION}" 		# source directory
-
-BLDdir="${SRCdir}/build" 			# build directory
-PREFIX="${ROOTdir}/lib/${NAME}_`date +%Y%m%d%H%M`"		# install directory
-LOG="${CACHEdir}/log"
-
-
-echo "root dir: ${ROOTdir}"
-echo "cache dir: ${CACHEdir}" 
-echo "source dir: ${SRCdir}"
-echo "build dir: ${BLDdir}"
-echo "install dir: ${PREFIX}"
-
-if [ ! -d ${CACHEdir} ]
-then
-	mkdir -p ${CACHEdir}
-fi
-
-echo "" &> ${LOG}
+source ${SCRIPTPATH}/config
 
 ### FETCH ###
-
-
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget http://ftp.gnome.org/pub/gnome/sources/glib/2.43/glib-2.43.4.tar.xz
+	wget http://ftp.gnome.org/pub/gnome/sources/glib/2.43/${NAME}-${VERSION}.tar.xz
 else
-	echo "WARNING: ${NAME} is already downloaded"
+	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 
+### EXTRACT ###
 if [ ! -d "./${SRCdir}" ]
-then                                                                                                                                
+then
 	mkdir "${SRCdir}"
 	unxz "./${NAME}-${VERSION}.tar.xz" &>> ${LOG}
 	tar -xf "./${NAME}-${VERSION}.tar" &>> ${LOG}
-else                                                                                                                                
-	echo "Warning: Atlas is alread extracted"
+else
+	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
 
+
+### COMPILE AND INSTALL ###
 #export LIBFFI_CFLAGS=-I"${PREFIX}/include"
 #export LIBFFI_LIBS="-L${PREFIX}/lib -lffi"
-### COMPILE AND INSTALL ###
-
 cd ${SRCdir}
 ./configure --prefix=${PREFIX} &>> ${LOG}
-make -j16 &>> ${LOG}
+make -j${THREAD_NUM} &>> ${LOG}
 make install &>> ${LOG}
 
 
 ### LINK ###
-cd "${ROOTdir}/lib"
-if [ -d "${ROOTdir}/lib/${NAME}" ]
-then
-	rm "${ROOTdir}/lib/${NAME}"
-fi
-ln -s $PREFIX ${NAME}
-
+source ${SCRIPTPATH}/link

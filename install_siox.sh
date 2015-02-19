@@ -2,60 +2,30 @@
 
 SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
-LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${SCRIPTPATH}/.."
 
-cd ${SCRIPTPATH}
-cd ..
+${SCRIPTPATH}/precheck
+
 NAME="siox"
 VERSION="dev"
 
-ROOTdir=${PWD}
-CACHEdir="${SCRIPTPATH}/cache_${NAME}"
-SRCdir="${CACHEdir}/${NAME}-${VERSION}" 		# source directory
+source ${SCRIPTPATH}/config
 
-BLDdir="${SRCdir}/build" 			# build directory
-PREFIX="${ROOTdir}/lib/${NAME}_`date +%Y%m%d%H%M`"		# install directory
-LOG="${CACHEdir}/log"
-
-
-echo "root dir: ${ROOTdir}"
-echo "cache dir: ${CACHEdir}" 
-echo "source dir: ${SRCdir}"
-echo "build dir: ${BLDdir}"
-echo "install dir: ${PREFIX}"
-
-if [ ! -d ${CACHEdir} ]
-then
-	mkdir -p ${CACHEdir}
-fi
-
-echo "" &> ${LOG}
 
 ### FETCH ###
-
-
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
 	git clone https://github.com/JulianKunkel/siox.git ${SRCdir} &>>${LOG} &>> "${LOG}"
 else
-	echo "WARNING: Siox is already downloaded"
+	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 #### COMPILE AND INSTALL ###
-
-#${SRCdir}/configure --with-libpq=$ROOTdir/lib/postgresql --with-glib=$ROOTdir/lib/glib --with-likwid=$ROOTdir/lib/likwid --with-boost=$ROOTdir/lib/boost --prefix=${PREFIX} --build-dir=${BLDdir} --build-wrappers 
-${SRCdir}/configure --with-libpq=$ROOTdir/lib/postgresql --with-glib=$ROOTdir/lib/glib  --with-boost=$ROOTdir/lib/boost --prefix=${PREFIX} --build-dir=${BLDdir} --build-wrappers 
+${SRCdir}/configure --with-libpq=${INSTALL_ROOT_DIR}/postgresql --with-glib=${INSTALL_ROOT_DIR}/glib  --with-boost=${INSTALL_ROOT_DIR}/boost --prefix=${PREFIX} --build-dir=${BLDdir} --with-likwid=${INSTALL_ROOT_DIR}/likwid --build-wrappers &>> ${LOG}
 cd "${BLDdir}" &>> "${LOG}"
+make -j${THREAD_NUM} &>> "${LOG}"
+make install &>> "${LOG}"
 
-make -j16 &>> "${LOG}"
-make -j16 install &>> "${LOG}"
 
 ### LINK ###
-cd "${ROOTdir}/lib"
-if [ -d "${ROOTdir}/lib/${NAME}" ]
-then
-	rm "${ROOTdir}/lib/${NAME}"
-fi
-ln -s $PREFIX ${NAME}
-
+source ${SCRIPTPATH}/link

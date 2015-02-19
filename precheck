@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+if [ -f "./config" ] 
+then
+	echo "config file found"
+else
+	echo "config file not found"
+	exit 1
+fi
