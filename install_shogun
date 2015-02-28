@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# notes for shogun 4.0.0
+# python interface works with only swig2
+# R interface requires library(methods) in ~/.Rprofile
+
 SCRIPT=$(readlink -f $0)
 export SCRIPTPATH=`dirname ${SCRIPT}`
 
@@ -15,13 +19,14 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
+	#git clone https://github.com/shogun-toolbox/shogun.git
 	wget ftp://shogun-toolbox.org/shogun/releases/4.0/sources/${NAME}-${VERSION}.tar.bz2
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 
-### EXTRACT ###
+## EXTRACT ###
 if [ ! -d "./${SRCdir}" ]
 then 
 	mkdir "${SRCdir}"
@@ -32,10 +37,13 @@ fi
 
 
 ### COMPILE AND INSTALL ###
+#SRCdir="$CACHEdir/shogun"
+#BLDdir="$SRCdir/build"
 mkdir ${BLDdir}
 cd ${BLDdir}
 #${INSTALL_ROOT_DIR}/cmake/bin/cmake clean
-${INSTALL_ROOT_DIR}/cmake/bin/cmake -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
+${INSTALL_ROOT_DIR}/cmake/bin/cmake -DPythonModular=ON -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
+#${INSTALL_ROOT_DIR}/cmake/bin/cmake -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" -DR_CXX_FLAGS="-I/home/betke/install/R/lib/R/include" ..
 #${INSTALL_ROOT_DIR}/cmake/bin/cmake -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
 make -j${THREAD_NUM} &>> ${LOG}
 make install DESTDIR=${PREFIX} &>> ${LOG}

@@ -5,9 +5,8 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 
 ${SCRIPTPATH}/precheck
 
-export NAME="swig"
-#export VERSION="3.0.5"
-export VERSION="2.0.12"
+export NAME="R"
+export VERSION="3.1.2"
 
 source ${SCRIPTPATH}/config
 
@@ -16,7 +15,7 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget http://garr.dl.sourceforge.net/project/swig/swig/${NAME}-${VERSION}/${NAME}-${VERSION}.tar.gz
+	wget http://mirrors.softliste.de/cran/src/base/R-3/${NAME}-${VERSION}.tar.gz
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
@@ -35,7 +34,7 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX}
+./configure --prefix=${PREFIX} --enable-R-shlib --enable-R-static-lib
 make -j${THREAD_NUM} &>> ${LOG}
 make install &>> ${LOG}
 

@@ -6,7 +6,10 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="boost"
-export VERSION="1_55_0"
+export MAJOR="1"
+export MINOR="54"
+export REVISION="0"
+export VERSION="${MAJOR}_${MINOR}_${REVISION}"
 
 source ${SCRIPTPATH}/config
 SRCdir="${CACHEdir}/${NAME}_${VERSION}" 		# source directory
@@ -44,9 +47,9 @@ echo "boost bzlib2 bin: ${BZLIB2_BINARY_DIR}"
 
 ### FETCH ###
 cd ${CACHEdir}
-if [ ! -e "${CACHEdir}/boost_1_55_0" ] 
+if [ ! -e "${CACHEdir}/${NAME}_${VERSION}" ] 
 then
-	SOURCE="http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2"
+	SOURCE="http://sourceforge.net/projects/boost/files/boost/${MAJOR}.${MINOR}.${REVISION}/${NAME}_${VERSION}.tar.bz2"
 	wget $SOURCE
 else
 	echo "WARNING: Archive already exists"
@@ -56,8 +59,8 @@ fi
 ### EXTRACT ###
 if [ ! -d "${SRCdir}" ] 
 then
-	bunzip2 "${CACHEdir}/boost_1_55_0.tar.bz2"  &>> $LOG
-	tar -xvf "${CACHEdir}/boost_1_55_0.tar" &>> $LOG
+	bunzip2 "${CACHEdir}/${NAME}_${VERSION}.tar.bz2"  &>> $LOG
+	tar -xvf "${CACHEdir}/${NAME}_${VERSION}.tar" &>> $LOG
 else
 	echo "WARNING: A copy of archive is already extracted"
 fi

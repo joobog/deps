@@ -2,32 +2,16 @@
 
 SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
-LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${SCRIPTPATH}/.."
 
+${SCRIPTPATH}/precheck
 
-cd ${SCRIPTPATH}
-cd ..
-ROOTdir=${PWD}
-CACHEdir="${SCRIPTPATH}/cache_shark"
-SRCdir="${CACHEdir}/Shark" 		# source directory
+NAME="Shark"
+VERSION=""
 
-BLDdir="${SRCdir}/build" 			# build directory
-PREFIX="${ROOTdir}/lib/shark_`date +%Y%m%d%H%M`"		# install directory
-LOG="${CACHEdir}/log"
+source ${SCRIPTPATH}/config
 
-
-echo "root dir: ${ROOTdir}"
-echo "cache dir: ${CACHEdir}" 
-echo "source dir: ${SRCdir}"
-echo "build dir: ${BLDdir}"
-echo "install dir: ${PREFIX}"
-
-if [ ! -d ${CACHEdir} ]
-then
-	mkdir -p ${CACHEdir}
-fi
-
-echo "" &> ${LOG}
+SRCdir="${CACHEdir}/Shark"
+BLDdir="${SRCdir}/build"
 
 ### FETCH ###
 
@@ -47,19 +31,13 @@ then
 	rm -rf ${BLDdir}
 fi
 mkdir -p ${BLDdir}
-
 cd ${BLDdir}
-cmake ${SRCdir} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT:Path=${ROOTdir}/lib/boost/  -DBOOST_INCLUDEDIR=${ROOTdir}/lib/boost/include -DBOOST_LIBRARYDIR=${ROOTdir}/lib/boost/lib -DATLAS_ROOT:Path=${ROOTdir}/lib/atlas/ -DATLAS_INCLUDEDIR=${ROOTdir}/lib/atlas/include -DATLAS_LIBRARYDIR=${ROOTdir}/lib/atlas/lib -DOPT_ENABLE_ATLAS=ON -DOPT_ENABLE_OPENMP=ON -DOPT_COMPILE_EXAMPLES=OFF &>> ${LOG}
 
-make -j16 &>> ${LOG}
-make -j16 install &>> ${LOG}
+cmake ${SRCdir} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT:Path=${INSTALL_ROOT_DIR}/boost/  -DBOOST_INCLUDEDIR=${INSTALL_ROOT_DIR}/boost/include -DBOOST_LIBRARYDIR=${INSTALL_ROOT_DIR}/boost/lib -DATLAS_ROOT:Path=${INSTALL_ROOT_DIR}/atlas/ -DATLAS_INCLUDEDIR=${INSTALL_ROOT_DIR}/atlas/include -DATLAS_LIBRARYDIR=${INSTALL_ROOT_DIR}/atlas/lib -DOPT_ENABLE_ATLAS=OFF -DOPT_ENABLE_OPENMP=ON -DOPT_COMPILE_EXAMPLES=OFF &>> ${LOG}
+
+make -j${THREAD_NUM} &>> ${LOG}
+make install &>> ${LOG}
 
 
 ### LINK ###
-cd "${ROOTdir}/lib"
-if [ -d "${ROOTdir}/lib/shark" ]
-then
-	rm "${ROOTdir}/lib/shark"
-fi
-ln -s $PREFIX shark
-
+source ${SCRIPTPATH}/link

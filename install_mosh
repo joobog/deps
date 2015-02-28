@@ -5,9 +5,8 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 
 ${SCRIPTPATH}/precheck
 
-export NAME="swig"
-#export VERSION="3.0.5"
-export VERSION="2.0.12"
+export NAME="mosh"
+export VERSION="1.2.4"
 
 source ${SCRIPTPATH}/config
 
@@ -16,25 +15,28 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget http://garr.dl.sourceforge.net/project/swig/swig/${NAME}-${VERSION}/${NAME}-${VERSION}.tar.gz
+	git clone https://github.com/keithw/mosh
+	#wget --no-check-certificate https://mosh.mit.edu/${NAME}-${VERSION}.tar.gz 
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 
 ### EXTRACT ###
-if [ ! -d "./${SRCdir}" ]
-then 
-	mkdir "${SRCdir}"
-	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -xvf "./${NAME}-${VERSION}.tar" &>> ${LOG}
-else
-	echo "Warning: ${NAME}-${VERSION} is alread extracted"
-fi
+#if [ ! -d "./${SRCdir}" ]
+#then 
+	#mkdir "${SRCdir}"
+	#gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
+	#tar -xvf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+#else
+	#echo "Warning: ${NAME}-${VERSION} is alread extracted"
+#fi
 
 
 ### COMPILE AND INSTALL ###
+SRCdir="$CACHEdir/mosh"
 cd ${SRCdir}
+./autogen.sh
 ./configure --prefix=${PREFIX}
 make -j${THREAD_NUM} &>> ${LOG}
 make install &>> ${LOG}
