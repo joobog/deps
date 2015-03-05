@@ -6,7 +6,12 @@ SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 NAME="postgresql"
-VERSION="9.1.15"
+#9.4.1
+#9.1.15
+MAJOR="9"
+MINOR="1"
+REVISION="15"
+VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -15,8 +20,7 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	#wget https://ftp.postgresql.org/pub/source/v9.4.1/postgresql-9.4.1.tar.gz
-	wget ftp://ftp.postgresql.org/pub/source/v9.1.15/postgresql-9.1.15.tar.gz
+	wget ftp://ftp.postgresql.org/pub/source/v$VERSION/$NAME-$VERSION.tar.gz
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
@@ -26,8 +30,7 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then
 	mkdir "${SRCdir}"
-	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	tar -vzxf "./${NAME}-${VERSION}.tar.gz"
 else
 	echo "Warning: ${NAME}-${VERSION} is already extracted"
 fi
@@ -35,9 +38,9 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX} &>> ${LOG}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+./configure --prefix=${PREFIX}
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###

@@ -6,7 +6,10 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="mosh"
-export VERSION="1.2.4"
+export MAJOR="1"
+export MINOR="2"
+export REVISION="4"
+export VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -15,31 +18,30 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	git clone https://github.com/keithw/mosh
-	#wget --no-check-certificate https://mosh.mit.edu/${NAME}-${VERSION}.tar.gz 
+	#git clone https://github.com/keithw/mosh
+	wget --no-check-certificate https://mosh.mit.edu/${NAME}-${VERSION}.tar.gz 
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 
-### EXTRACT ###
-#if [ ! -d "./${SRCdir}" ]
-#then 
-	#mkdir "${SRCdir}"
-	#gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	#tar -xvf "./${NAME}-${VERSION}.tar" &>> ${LOG}
-#else
-	#echo "Warning: ${NAME}-${VERSION} is alread extracted"
-#fi
+## EXTRACT ###
+if [ ! -d "./${SRCdir}" ]
+then 
+	mkdir "${SRCdir}"
+	tar -xzvf "./${NAME}-${VERSION}.tar.gz"
+else
+	echo "Warning: ${NAME}-${VERSION} is alread extracted"
+fi
 
 
 ### COMPILE AND INSTALL ###
-SRCdir="$CACHEdir/mosh"
+#SRCdir="$CACHEdir/mosh"
 cd ${SRCdir}
 ./autogen.sh
 ./configure --prefix=${PREFIX}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###

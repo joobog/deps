@@ -6,7 +6,10 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="libpqxx"
-export VERSION="4.0.1"
+MAJOR="4"
+MINOR="0"
+REVISION="1"
+export VERSION="$MAJOR.$MINOR.$REVISION" 
 
 source ${SCRIPTPATH}/config
 
@@ -25,8 +28,7 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then 
 	mkdir "${SRCdir}"
-	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	tar -vzxf "./${NAME}-${VERSION}.tar.gz"
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -34,9 +36,9 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX} --with-pic=yes &>> ${LOG}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+./configure --prefix=${PREFIX} --with-pic=yes
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###

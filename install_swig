@@ -6,8 +6,11 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="swig"
+MAJOR="2"
+MINOR="0"
+REVISION="12"
 #export VERSION="3.0.5"
-export VERSION="2.0.12"
+export VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -26,8 +29,7 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then 
 	mkdir "${SRCdir}"
-	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -xvf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	tar -xzvf "./${NAME}-${VERSION}.tar.gz"
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -36,8 +38,8 @@ fi
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
 ./configure --prefix=${PREFIX}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###

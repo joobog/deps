@@ -3,11 +3,11 @@
 SCRIPT=$(readlink -f $0)
 export SCRIPTPATH=`dirname ${SCRIPT}`
 
-${SCRIPTPATH}/precheck
+#source ${SCRIPTPATH}/precheck
 
 export NAME="boost"
 export MAJOR="1"
-export MINOR="54"
+export MINOR="55"
 export REVISION="0"
 export VERSION="${MAJOR}_${MINOR}_${REVISION}"
 
@@ -59,17 +59,17 @@ fi
 ### EXTRACT ###
 if [ ! -d "${SRCdir}" ] 
 then
-	bunzip2 "${CACHEdir}/${NAME}_${VERSION}.tar.bz2"  &>> $LOG
-	tar -xvf "${CACHEdir}/${NAME}_${VERSION}.tar" &>> $LOG
+	#bunzip2 "${CACHEdir}/${NAME}_${VERSION}.tar.bz2" 
+	tar -xjvf "${CACHEdir}/${NAME}_${VERSION}.tar.bz2"
 else
 	echo "WARNING: A copy of archive is already extracted"
 fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-${SRCdir}/bootstrap.sh  --prefix=$PREFIX  &>> $LOG
-${SRCdir}/b2 -j${THREAD_NUM}  &>> $LOG
-${SRCdir}/b2 -j${THREAD_NUM} --build-type=complete --layout=tagged  --prefix=${PREFIX} install &>> $LOG
+${SRCdir}/bootstrap.sh  --prefix=$PREFIX
+${SRCdir}/b2 -j${THREAD_NUM}
+${SRCdir}/b2 -j${THREAD_NUM} --build-type=complete --layout=tagged  --prefix=${PREFIX} install
 
 
 ### LINK ###

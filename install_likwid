@@ -6,7 +6,10 @@ SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 NAME="likwid"
-VERSION="3.1.3"
+MAJOR="3"
+MINOR="1"
+REVISION="3"
+VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -24,9 +27,7 @@ fi
 ### EXTRACT ###
 if [ ! -d "./${SRCdir}" ]
 then
-	#mkdir "${SRCdir}"
-	gunzip -f "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	tar -zvxf "./${NAME}-${VERSION}.tar.gz"
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -42,11 +43,13 @@ echo "COUNT = $COUNT"
 if [ ${COUNT} -eq 0 ]
 then
 	echo "add -fPIC flag to CFLAGS and CPPFLAGS"
-	sed -i '/^CPPFLAGS.*/ a\CPPFLAGS += \{CPPFLAGS\} -fPIC' ./Makefile
-	sed -i '/^CFLAGS.*/ a\CPPFLAGS += ${CFLAGS} -fPIC' ./Makefile
+	sed -i '/^CPPFLAGS.*/ a\CPPFLAGS += -fPIC' ./Makefile
+	sed -i '/^CFLAGS.*/ a\CFLAGS += -fPIC' ./Makefile
+	#sed -i '/^CPPFLAGS.*/ a\CPPFLAGS += \{CPPFLAGS\} -fPIC' ./Makefile
+	#sed -i '/^CFLAGS.*/ a\CPPFLAGS += ${CFLAGS} -fPIC' ./Makefile
 fi
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###
