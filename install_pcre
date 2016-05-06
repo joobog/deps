@@ -1,15 +1,16 @@
 #!/bin/bash
 
 SCRIPT=$(readlink -f $0)
-SCRIPTPATH=`dirname ${SCRIPT}`
+export SCRIPTPATH=`dirname ${SCRIPT}`
 
 ${SCRIPTPATH}/precheck
 
-NAME="libffi"
-MAJOR="3"
-MINOR="0"
-REVISION="13"
-VERSION="$MAJOR.$MINOR.$REVISION"
+export NAME="pcre"
+MAJOR="8"
+MINOR="35"
+#REVISION="12"
+#export VERSION="3.0.5"
+export VERSION="$MAJOR.$MINOR"
 
 source ${SCRIPTPATH}/config
 
@@ -18,15 +19,16 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget ftp://sourceware.org/pub/libffi/${NAME}-${VERSION}.tar.gz
+
+	wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$NAME-$VERSION.tar.gz
 else
-	echo "WARNING: ${NAME} is already downloaded"
+	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
 
 
 ### EXTRACT ###
 if [ ! -d "./${SRCdir}" ]
-then
+then 
 	mkdir "${SRCdir}"
 	tar -xzvf "./${NAME}-${VERSION}.tar.gz"
 else
@@ -36,10 +38,11 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX} --with-pic=yes
+./configure --prefix=${PREFIX}
 make -j${THREAD_NUM}
 make install
 
 
 ### LINK ###
 source ${SCRIPTPATH}/link
+

@@ -11,7 +11,10 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="shogun"
-export VERSION="4.0.0"
+MAJOR="4"
+MINOR="0"
+REVISION="0"
+export VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -21,7 +24,7 @@ if [ ! -d "${SRCdir}" ]
 then
 	cd ${CACHEdir}
 	#git clone https://github.com/shogun-toolbox/shogun.git
-	wget ftp://shogun-toolbox.org/shogun/releases/4.0/sources/${NAME}-${VERSION}.tar.bz2
+	wget ftp://shogun-toolbox.org/shogun/releases/$MAJOR.$MINOR/sources/${NAME}-${VERSION}.tar.bz2
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
@@ -31,7 +34,8 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then 
 	mkdir "${SRCdir}"
-	bunzip2 -c "./${NAME}-${VERSION}.tar.bz2" | tar -xf - &>> ${LOG}
+	#bunzip2 -c "./${NAME}-${VERSION}.tar.bz2" | tar -xvf - 
+	tar -xjvf "./${NAME}-${VERSION}.tar.bz2"
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -43,11 +47,13 @@ fi
 mkdir ${BLDdir}
 cd ${BLDdir}
 #${INSTALL_ROOT_DIR}/cmake/bin/cmake clean
-${INSTALL_ROOT_DIR}/cmake/bin/cmake -DPythonModular=ON -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
+#${INSTALL_ROOT_DIR}/cmake/bin/cmake -DPythonModular=ON -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
+#${INSTALL_ROOT_DIR}/cmake/bin/cmake ..
 #${INSTALL_ROOT_DIR}/cmake/bin/cmake -DRModular=ON -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" -DR_CXX_FLAGS="-I/home/betke/install/R/lib/R/include" ..
 #${INSTALL_ROOT_DIR}/cmake/bin/cmake -DCMAKE_CXX_FLAGS="-I/usr/include/mpi" ..
-make -j${THREAD_NUM} &>> ${LOG}
-make install DESTDIR=${PREFIX} &>> ${LOG}
+cmake -DCMAKE_CXX_FLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DPythonModular=ON -DRModular=ON ..
+make -j${THREAD_NUM}
+make install DESTDIR=${PREFIX}
 
 
 ### LINK ###

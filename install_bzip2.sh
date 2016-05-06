@@ -6,7 +6,10 @@ export SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 export NAME="bzip2"
-export VERSION="1.0.6"
+export MAJOR="1"
+export MINOR="0"
+export REVISION="6"
+export VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -15,7 +18,7 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget "http://bzip.org/1.0.6/${NAME}-${VERSION}.tar.gz"
+	wget "http://bzip.org/$VERSION/${NAME}-${VERSION}.tar.gz"
 
 else
 	echo "WARNING: ${NAME}-${VERSION} already exists"
@@ -25,8 +28,8 @@ fi
 ### EXTRACT ###
 if [ ! -d "${SRCdir}" ] 
 then
-	gunzip "${CACHEdir}/bzip2-1.0.6.tar.gz" &>> $LOG
-	tar -xvf "${CACHEdir}/bzip2-1.0.6.tar" &>> $LOG
+	#gunzip "${CACHEdir}/${NAME}-${VERSION}.tar.gz"
+	tar -xzvf "${CACHEdir}/${NAME}-${VERSION}.tar.gz"
 
 else
 	echo "WARNING: A copy of archive is already extracted"

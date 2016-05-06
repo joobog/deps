@@ -6,7 +6,10 @@ SCRIPTPATH=`dirname ${SCRIPT}`
 ${SCRIPTPATH}/precheck
 
 NAME="glib"
-VERSION="2.43.4"
+MAJOR="2"
+MINOR="43"
+REVISION="4"
+VERSION="$MAJOR.$MINOR.$REVISION"
 
 source ${SCRIPTPATH}/config
 
@@ -14,7 +17,7 @@ source ${SCRIPTPATH}/config
 if [ ! -d "${SRCdir}" ] 
 then
 	cd ${CACHEdir}
-	wget http://ftp.gnome.org/pub/gnome/sources/glib/2.43/${NAME}-${VERSION}.tar.xz
+	wget http://ftp.gnome.org/pub/gnome/sources/glib/$MAJOR.$MINOR/${NAME}-${VERSION}.tar.xz
 else
 	echo "WARNING: ${NAME}-${VERSION} is already downloaded"
 fi
@@ -24,8 +27,8 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then
 	mkdir "${SRCdir}"
-	unxz "./${NAME}-${VERSION}.tar.xz" &>> ${LOG}
-	tar -xf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	#unxz "./${NAME}-${VERSION}.tar.xz"
+	tar -xJvf "./${NAME}-${VERSION}.tar.xz"
 else
 	echo "Warning: ${NAME}-${VERSION} is alread extracted"
 fi
@@ -35,9 +38,9 @@ fi
 #export LIBFFI_CFLAGS=-I"${PREFIX}/include"
 #export LIBFFI_LIBS="-L${PREFIX}/lib -lffi"
 cd ${SRCdir}
-./configure --prefix=${PREFIX} &>> ${LOG}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+./configure --prefix=${PREFIX}
+make -j${THREAD_NUM}
+make install
 
 
 ### LINK ###

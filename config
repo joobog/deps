@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INSTALL_ROOT_DIR="/opt/betke"
-THREAD_NUM=10
+INSTALL_ROOT_DIR="/scratch/pool/CIS/m215026/install"
+THREAD_NUM=16
 #DATE="$(date +%Y%m%d%H%M)"
 DATE="$(date +%Y%m%d)"
 

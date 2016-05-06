@@ -3,7 +3,7 @@
 SCRIPT=$(readlink -f $0)
 export SCRIPTPATH=`dirname ${SCRIPT}`
 
-${SCRIPTPATH}/precheck
+#source ${SCRIPTPATH}/precheck
 
 module purge
 
@@ -102,6 +102,5 @@ ${SRCdir}/b2 -j${THREAD_NUM} --build-type=complete \
 	--with-wave \
 	--layout=tagged  \
 	--prefix=${PREFIX} install
-
 
 

@@ -9,7 +9,7 @@ echo "PREFIX: ${PREFIX}"
 echo "NAME: ${NAME}"
 
 cd "${INSTALL_ROOT_DIR}"
-if [ -d "${INSTALL_ROOT_DIR}/${NAME}" ]
+if [ -h "${INSTALL_ROOT_DIR}/${NAME}" ]
 then
 	rm "${INSTALL_ROOT_DIR}/${NAME}"
 fi
