@@ -2,6 +2,7 @@
 
 # notes for shogun 4.0.0
 # python interface works with only swig2
+#	python examples require modules: numpy, scipy, matplotlib
 # R interface requires library(methods) in ~/.Rprofile
 
 SCRIPT=$(readlink -f $0)

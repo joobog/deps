@@ -3,6 +3,9 @@
 SCRIPT=$(readlink -f $0)
 SCRIPTPATH=`dirname ${SCRIPT}`
 
+module purge
+module load openmpi/1.8.3-ib
+
 ${SCRIPTPATH}/precheck
 
 NAME="postgresql"
@@ -26,8 +29,8 @@ fi
 if [ ! -d "./${SRCdir}" ]
 then
 	mkdir "${SRCdir}"
-	gunzip "./${NAME}-${VERSION}.tar.gz" &>> ${LOG}
-	tar -vxf "./${NAME}-${VERSION}.tar" &>> ${LOG}
+	#gunzip "./${NAME}-${VERSION}.tar.gz"
+	tar -xzvf "./${NAME}-${VERSION}.tar"
 else
 	echo "Warning: ${NAME}-${VERSION} is already extracted"
 fi
@@ -35,10 +38,7 @@ fi
 
 ### COMPILE AND INSTALL ###
 cd ${SRCdir}
-./configure --prefix=${PREFIX} &>> ${LOG}
-make -j${THREAD_NUM} &>> ${LOG}
-make install &>> ${LOG}
+./configure --prefix=${PREFIX}
+make -j${THREAD_NUM}
+make install
 
-
-### LINK ###
-source ${SCRIPTPATH}/link

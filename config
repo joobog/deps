@@ -1,17 +1,16 @@
 #!/bin/bash
 
-INSTALL_ROOT_DIR=/home/betke/install
+INSTALL_ROOT_DIR="/opt/betke"
 THREAD_NUM=10
-DATE=`date +%Y%m%d%H%M`
+#DATE="$(date +%Y%m%d%H%M)"
+DATE="$(date +%Y%m%d)"
 
 CACHEdir="${SCRIPTPATH}/cache_${NAME}"
 SRCdir="${CACHEdir}/${NAME}-${VERSION}" 		# source directory
 
 BLDdir="${SRCdir}/build" 			# build directory
-PREFIX="${INSTALL_ROOT_DIR}/${NAME}_${DATE}"		# install directory
+PREFIX="${INSTALL_ROOT_DIR}/${NAME}/${VERSION}"		# install directory
 LOG="${CACHEdir}/log"
-
-echo "" > ${LOG}
 
 echo "NAME: ${NAME}"
 echo "VERSION: ${VERSION}"
